@@ -50,6 +50,7 @@ export default function Scanner() {
   const [scanning, setScanning] = useState(false);
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
   const [cameraError, setCameraError] = useState('');
+  const [notification, setNotification] = useState<{message: string, entry?: SerialEntry} | null>(null);
   
   // Events & full screen state
   const [activeEvent, setActiveEvent] = useState<EventEntry | null>(null);
@@ -72,6 +73,13 @@ export default function Scanner() {
     });
     return map;
   }, [serials]);
+
+  // Auto-dismiss notification after 4 seconds
+  useEffect(() => {
+    if (!notification) return;
+    const timeout = setTimeout(() => setNotification(null), 4000);
+    return () => clearTimeout(timeout);
+  }, [notification]);
 
   // Initial silent sync on mount
   useEffect(() => {
@@ -197,6 +205,7 @@ export default function Scanner() {
                 
               if (updateErr) throw updateErr;
               setScanResult({ ok: true, message: 'Valid ticket. Marked as Scanned.', entry: data });
+              setNotification({ message: 'Ticket validated & scanned!', entry: data });
               // Refresh scanned list immediately
               refreshScannedList();
             }
@@ -472,6 +481,26 @@ export default function Scanner() {
           </div>
         );
       })()}
+
+      {/* Success Notification Toast */}
+      {notification && (
+        <div className="notification-toast">
+          <div className="notification-icon">✓</div>
+          <div className="notification-content">
+            <div className="notification-message">{notification.message}</div>
+            {notification.entry && (
+              <div className="notification-details">
+                <div className="notification-serial">{notification.entry.serialNumber}</div>
+                {(notification.entry.mainLabel || notification.entry.label) && (
+                  <div className="notification-labels">
+                    {[notification.entry.mainLabel, notification.entry.label].filter(Boolean).join(' · ')}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
