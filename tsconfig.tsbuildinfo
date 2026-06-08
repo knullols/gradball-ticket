@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/ticket-data.ts","./src/types.ts","./src/utils.ts","./src/vite-env.d.ts","./src/components/authguard.tsx","./src/components/confirmationmodal.tsx","./src/lib/supabaseclient.ts","./src/pages/adminstudio.tsx","./src/pages/landing.tsx","./src/pages/login.tsx","./src/pages/scanner.tsx"],"version":"5.9.3"}
